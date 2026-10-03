@@ -2,6 +2,10 @@
 
 纯黑背景、六张独立的机械翻页卡片，显示 24 小时制的北京时间 `HH : MM : SS`。页面没有按钮、标题、日期或其他可见文字。
 
+在线使用：**[打开翻页时钟](https://2461811168qqcom-ui.github.io/flip-clock/)**。
+
+源代码：[GitHub 仓库](https://github.com/2461811168qqcom-ui/flip-clock)。已部署到 GitHub Pages，可在平板浏览器中打开并添加到主屏幕。
+
 ## 打开使用
 
 直接双击 `index.html`，或将其拖入 Edge、Chrome、Firefox、Safari 等现代浏览器。三个网页文件需要保存在同一个文件夹。无需安装软件、构建项目、启动服务器或连接网络。
@@ -73,3 +77,5 @@ Windows 浏览器按 **F11** 进入/退出全屏；macOS 可以使用浏览器�
 - Chromium 的 PWA 可安装性检查无错误；真实输入手势双点时钟，Fullscreen API 成功进入和退出全屏。
 
 恢复与长时间挂起使用受控时间模拟验证，没有执行真实的十小时等待或电脑休眠。浏览器兼容性实测为 Edge，其他现代浏览器使用同一套标准 Web API。
+
+部署后，已对上面的真实 HTTPS 在线地址运行相同浏览器测试，全部通过；线上项目文件逐项与本地内容一致，CSS、JavaScript、manifest、service worker 和 PNG 图标均返回 HTTP 200。线上版本也通过了缓存后禁用网络再启动和刷新测试。平板布局由实际浏览器模拟屏幕尺寸验证，尚未在实体 iPad 或 Android 平板上测试。
