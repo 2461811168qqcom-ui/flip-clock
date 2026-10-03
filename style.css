@@ -1,0 +1,174 @@
+:root {
+  color-scheme: dark;
+  --viewport-height: 100vh;
+  --usable-width: calc(100vw - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+  --usable-height: calc(var(--viewport-height) - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  /* 6 cards + 3 pair gaps + 4 outer gaps + 2 colons = 7.395 card widths. */
+  --card-width: min(calc(var(--usable-width) / 7.395), calc(var(--usable-height) / 1.48));
+  --card-height: calc(var(--card-width) * 1.48);
+  --flip-duration: 640ms;
+  --half-duration: 320ms;
+  --radius: calc(var(--card-width) * 0.045);
+  background: #000000;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: #000000;
+}
+
+body {
+  height: var(--viewport-height);
+  padding: calc(12px + env(safe-area-inset-top, 0px))
+    calc(12px + env(safe-area-inset-right, 0px))
+    calc(12px + env(safe-area-inset-bottom, 0px))
+    calc(12px + env(safe-area-inset-left, 0px));
+  display: grid;
+  place-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.clock {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--card-width) * 0.20);
+  color: #f8f8f8;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+.digit-pair {
+  display: flex;
+  gap: calc(var(--card-width) * 0.065);
+}
+
+.digit {
+  position: relative;
+  width: var(--card-width);
+  height: var(--card-height);
+  perspective: calc(var(--card-height) * 4);
+  border-radius: var(--radius);
+  background: #101010;
+  box-shadow: 0 1px 0 #242424, 0 10px 24px #000000;
+}
+
+.half {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.top, .flap-top {
+  top: 0;
+  background: #171717;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.bottom, .flap-bottom {
+  bottom: 0;
+  background: #111111;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+.glyph {
+  position: absolute;
+  inset-inline: 0;
+  height: var(--card-height);
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--card-width) * 1.32);
+  line-height: 1;
+}
+
+.top .glyph, .flap-top .glyph { top: 0; }
+.bottom .glyph, .flap-bottom .glyph { bottom: 0; }
+
+.flap { visibility: hidden; z-index: 3; }
+.flap-top { transform-origin: center bottom; }
+.flap-bottom { transform-origin: center top; transform: rotateX(90deg); }
+
+.digit.flipping .flap {
+  visibility: visible;
+  will-change: transform;
+}
+
+.digit.flipping .flap-top {
+  animation: fold-top var(--half-duration) cubic-bezier(0.45, 0, 0.75, 0.55) both;
+}
+
+.digit.flipping .flap-bottom {
+  animation: unfold-bottom var(--half-duration) cubic-bezier(0.15, 0.45, 0.30, 1)
+    var(--half-duration) both;
+}
+
+.seam {
+  position: absolute;
+  top: calc(50% - 1px);
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 5;
+  background: #000000;
+  box-shadow: 0 1px 0 #ffffff08;
+  pointer-events: none;
+}
+
+.digit::before, .digit::after {
+  content: "";
+  position: absolute;
+  top: calc(50% - var(--card-width) * 0.025);
+  width: calc(var(--card-width) * 0.016);
+  height: calc(var(--card-width) * 0.05);
+  z-index: 6;
+  border-radius: 2px;
+  background: #353535;
+}
+
+.digit::before { left: 0; }
+.digit::after { right: 0; }
+
+.colon {
+  width: calc(var(--card-width) * 0.20);
+  display: grid;
+  place-items: center;
+  height: var(--card-height);
+  font-size: calc(var(--card-width) * 0.72);
+  line-height: 1;
+  transform: translateY(calc(var(--card-width) * -0.045));
+}
+
+@keyframes fold-top {
+  from { transform: rotateX(0deg); box-shadow: inset 0 0 0 #00000000; }
+  to { transform: rotateX(-90deg); box-shadow: inset 0 -40px 60px #00000080; }
+}
+
+@keyframes unfold-bottom {
+  from { transform: rotateX(90deg); box-shadow: inset 0 40px 60px #00000080; }
+  to { transform: rotateX(0deg); box-shadow: inset 0 0 0 #00000000; }
+}
+
+@supports (height: 100svh) {
+  :root { --viewport-height: 100svh; }
+}
+
+@supports (height: 100dvh) {
+  :root { --viewport-height: 100dvh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --flip-duration: 1ms; --half-duration: 0.5ms; }
+}
